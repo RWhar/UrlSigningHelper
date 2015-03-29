@@ -1,0 +1,16 @@
+{
+    "name": "RWhar/UrlSigningHelper",
+    "licence": "proprietary",
+    "authors": [
+        {
+            "name": "Richard Wharton",
+            "email": "r.g.wharton@gmail.com"
+        }
+    ],
+    "autoload": {
+        "classmap": ["src/UrlSigningHelper.php"]
+    },
+    "require": {
+        "jakeasmith/http_build_url": "dev-master"
+    }
+}
