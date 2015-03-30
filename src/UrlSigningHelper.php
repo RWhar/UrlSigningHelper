@@ -84,10 +84,8 @@ class UrlSigningHelper
     public function createSignedUrl($url, $expires, $secretKey) {
         parse_str(parse_url($url, PHP_URL_QUERY), $queryParams);
 
-        $urlScheme = parse_url($url, PHP_URL_SCHEME);
-
-        if ($urlScheme == false || parse_url($url, PHP_URL_HOST) == false) {
-            throw new LogicException('URL is malformed.');
+        if (!$this->urlIsWellFormed($url)) {
+            throw new LogicException('First argument URL must be a full valid URL.');
         }
 
         if (array_intersect(['expires', 'signature'], array_keys($queryParams))) {
@@ -134,12 +132,12 @@ class UrlSigningHelper
      */
     public function validateSignedUrl($url, array $secretKeys)
     {
-        if (!is_string($url) || strlen($url) < 5) {
-            throw new LogicException('First argument URL must be a valid URL of type string,');
+        if (!$this->urlIsWellFormed($url)) {
+            throw new LogicException('First argument URL must be a full valid URL.');
         }
 
         if (count($secretKeys) < 1) {
-            throw new LogicException('Secret keys array must contain at least one item.');
+            throw new LogicException('Second argument secretKeys array must contain at least one item.');
         }
 
         $scheme = parse_url($url, PHP_URL_SCHEME);
@@ -260,5 +258,25 @@ class UrlSigningHelper
         $seconds = $days * 24 * 60 * 60;
 
         return time() + $seconds;
+    }
+
+
+    /**
+     * Basic check, ensures scheme and host are present.
+     *
+     * Does not check if scheme or host are valid, primarily in place to help debug
+     * accidental incorrect input rather than adherence to the URL spec or any particular scheme.
+     *
+     * @param string $url The URL to check
+     *
+     * @return bool true if ok
+     */
+    protected function urlIsWellFormed($url)
+    {
+        if (parse_url($url, PHP_URL_SCHEME) == false || parse_url($url, PHP_URL_HOST) == false) {
+            return false;
+        }
+
+        return true;
     }
 }
