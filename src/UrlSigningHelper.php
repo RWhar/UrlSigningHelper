@@ -84,6 +84,12 @@ class UrlSigningHelper
     public function createSignedUrl($url, $expires, $secretKey) {
         parse_str(parse_url($url, PHP_URL_QUERY), $queryParams);
 
+        $urlScheme = parse_url($url, PHP_URL_SCHEME);
+
+        if ($urlScheme == false || parse_url($url, PHP_URL_HOST) == false) {
+            throw new LogicException('URL is malformed.');
+        }
+
         if (array_intersect(['expires', 'signature'], array_keys($queryParams))) {
             throw new LogicException('Query parameters "expires" and "signature" are reserved.');
         }
