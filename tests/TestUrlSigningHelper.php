@@ -131,4 +131,91 @@ class TestUrlSigningHelper extends PHPUnit_Framework_TestCase
         $this->assertEquals(false, $sut->validateSignedUrl($tamperedUrl2, [$key]), 'Tampering with url invalidates signature.');
         $this->assertEquals(false, $sut->validateSignedUrl($tamperedUrl3, [$key]), 'Tampering with signature invalidates signature.');
     }
+
+
+    public function testMalformedUrlSchemeDetectedOnCreation()
+    {
+        $this->setExpectedException('LogicException');
+        $sut = new UrlSigningHelper();
+
+        $url = 'httptest.com/?token=1234567890987654';
+        $key = 'SECRET12123456788765432121TERCES';
+
+        $expires = time() + 60;
+
+        $sut->createSignedUrl($url, $expires, $key);
+    }
+
+
+    public function testMalformedUrlHostDetectedOnCreation()
+    {
+        $this->setExpectedException('LogicException');
+
+        $sut = new UrlSigningHelper();
+
+        $url = 'http:///?token=1234567890987654';
+        $key = 'SECRET12123456788765432121TERCES';
+
+        $expires = time() + 60;
+
+        $sut->createSignedUrl($url, $expires, $key);
+    }
+
+
+    public function testMalformedUrlQueryDetectedOnCreation()
+    {
+        $this->setExpectedException('LogicException');
+        $sut = new UrlSigningHelper();
+
+        $url = 'httptest.com?token=1234567890987654';
+        $key = 'SECRET12123456788765432121TERCES';
+
+        $expires = time() + 60;
+
+        $sut->createSignedUrl($url, $expires, $key);
+    }
+
+
+
+    public function testMalformedUrlSchemeDetectedOnValidation()
+    {
+        $this->setExpectedException('LogicException');
+        $sut = new UrlSigningHelper();
+
+        $url = 'httptest.com/?token=1234567890987654';
+        $key = 'SECRET12123456788765432121TERCES';
+
+        $expires = time() + 60;
+
+        $sut->createSignedUrl($url, $expires, $key);
+    }
+
+
+    public function testMalformedUrlHostDetectedOnValidation()
+    {
+        $this->setExpectedException('LogicException');
+
+        $sut = new UrlSigningHelper();
+
+        $url = 'http:///?token=1234567890987654';
+        $key = 'SECRET12123456788765432121TERCES';
+
+        $expires = time() + 60;
+
+        $sut->createSignedUrl($url, $expires, $key);
+    }
+
+
+    public function testMalformedUrlQueryDetectedOnValidation()
+    {
+        $this->setExpectedException('LogicException');
+        $sut = new UrlSigningHelper();
+
+        $url = 'httptest.com?token=1234567890987654';
+        $key = 'SECRET12123456788765432121TERCES';
+
+        $expires = time() + 60;
+
+        $sut->createSignedUrl($url, $expires, $key);
+    }
 }
