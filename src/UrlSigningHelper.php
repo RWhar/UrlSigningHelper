@@ -152,12 +152,15 @@ class UrlSigningHelper
         $providedSignature = $query['signature'];
         unset($query['signature']);
 
-        $parts['scheme'] = $scheme;
-        $parts['host'] = $host;
-        $parts['path'] = $path;
-        $parts['query'] = http_build_query($query);
-
-        $rebuiltUrl = http_build_url('', $parts);
+        $rebuiltUrl = http_build_url(
+            '',
+            [
+                'scheme' => $scheme,
+                'host' => $host,
+                'path' => $path,
+                'query' => http_build_query($query)
+            ]
+        );
 
         if (substr($rebuiltUrl, -1, 1) === '?') {
             $rebuiltUrl = substr($rebuiltUrl, 0, -1);
